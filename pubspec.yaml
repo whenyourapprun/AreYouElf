@@ -1,0 +1,32 @@
+name: are_you_elf
+description: A new Flutter project.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.2 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  camera: ^0.10.5+7
+  path: ^1.8.3
+  permission_handler: ^11.1.0
+  google_mlkit_commons: ^0.6.1
+  google_mlkit_face_detection: ^0.9.0
+  tflite_flutter: ^0.10.4
+  image: ^4.1.3
+  path_provider: ^2.1.1
+  image_picker: ^1.0.5
+  exif: ^3.3.0
+  google_fonts: ^6.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/models/
