@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -22,12 +20,8 @@ class FaceDetectorPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint paint1 = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0
+      ..strokeWidth = 3.0
       ..color = Colors.yellow; // 얼굴 테두리 색상
-    final Paint paint2 = Paint()
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 1.0
-      ..color = Colors.green;
 
     for (final Face face in faces) {
       final left = translateX(
@@ -63,66 +57,6 @@ class FaceDetectorPainter extends CustomPainter {
         Rect.fromLTRB(left, top, right, bottom),
         paint1,
       );
-
-      void paintContour(FaceContourType type) {
-        final contour = face.contours[type];
-        if (contour?.points != null) {
-          for (final Point point in contour!.points) {
-            canvas.drawCircle(
-                Offset(
-                  translateX(
-                    point.x.toDouble(),
-                    size,
-                    imageSize,
-                    rotation,
-                    cameraLensDirection,
-                  ),
-                  translateY(
-                    point.y.toDouble(),
-                    size,
-                    imageSize,
-                    rotation,
-                    cameraLensDirection,
-                  ),
-                ),
-                1,
-                paint1);
-          }
-        }
-      }
-
-      void paintLandmark(FaceLandmarkType type) {
-        final landmark = face.landmarks[type];
-        if (landmark?.position != null) {
-          canvas.drawCircle(
-              Offset(
-                translateX(
-                  landmark!.position.x.toDouble(),
-                  size,
-                  imageSize,
-                  rotation,
-                  cameraLensDirection,
-                ),
-                translateY(
-                  landmark.position.y.toDouble(),
-                  size,
-                  imageSize,
-                  rotation,
-                  cameraLensDirection,
-                ),
-              ),
-              2,
-              paint2);
-        }
-      }
-
-      for (final type in FaceContourType.values) {
-        paintContour(type);
-      }
-
-      for (final type in FaceLandmarkType.values) {
-        paintLandmark(type);
-      }
     }
   }
 

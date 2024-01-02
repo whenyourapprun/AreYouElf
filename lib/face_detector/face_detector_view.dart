@@ -19,7 +19,6 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
   bool _isBusy = false;
   CustomPaint? _customPaint;
   int _faces = 0;
-  String? _text;
   var _cameraLensDirection = CameraLensDirection.front;
 
   @override
@@ -60,7 +59,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
             onCameraLensDirectionChanged: (value) =>
                 _cameraLensDirection = value,
           ),
-          _faces != 1
+          _faces > 1
               ? const Align(
                   alignment: Alignment.center,
                   child: Text('too_many_face'),
@@ -75,9 +74,6 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
-    setState(() {
-      _text = '';
-    });
     final faces = await _faceDetector.processImage(inputImage);
     debugPrint('face_detector_view face count ${faces.length}');
     if (inputImage.metadata?.size != null &&
@@ -90,11 +86,6 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
       );
       _customPaint = CustomPaint(painter: painter);
     } else {
-      String text = 'Faces found: ${faces.length}\n\n';
-      for (final face in faces) {
-        text += 'face: ${face.boundingBox}\n\n';
-      }
-      _text = text;
       _customPaint = null;
     }
     _isBusy = false;
