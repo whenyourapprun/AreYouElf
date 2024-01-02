@@ -31,11 +31,14 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
       ),
       body: Stack(
         children: [
-          Image.file(
-            File(widget.path),
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
+          Transform.flip(
+            flipX: true,
+            child: Image.file(
+              File(widget.path),
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
           ),
           // Center(child: Text(widget.path)),
         ],
