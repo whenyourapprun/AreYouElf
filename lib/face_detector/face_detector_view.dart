@@ -1,5 +1,6 @@
 import 'package:are_you_elf/face_detector/detector_view.dart';
 import 'package:are_you_elf/face_detector/face_detector_painter.dart';
+import 'package:are_you_elf/pages/elf_check_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -47,13 +48,13 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
             takePicture: (path) {
               // 문자열로 캡쳐된 이미지 들어옴.
               debugPrint('click path $path');
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => PersonalColorCheckView(
-              //       path: path,
-              //     ),
-              //   ),
-              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ElfCheckPage(
+                    path: path,
+                  ),
+                ),
+              );
             },
             initialCameraLensDirection: _cameraLensDirection,
             onCameraLensDirectionChanged: (value) =>
