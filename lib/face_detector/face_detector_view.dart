@@ -34,7 +34,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
-        title: const Text('camera'),
+        title: const Text('Elf Detect'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),
@@ -43,9 +43,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
       body: Stack(
         children: [
           DetectorView(
-            title: 'camera',
             customPaint: _customPaint,
-            text: _text,
             onImage: _processImage,
             takePicture: (path) {
               // 문자열로 캡쳐된 이미지 들어옴.
