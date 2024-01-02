@@ -14,17 +14,30 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
-        title: const Text('Elf Analyze'),
+        title: const Text(
+          'Elf Analyze',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () =>
+              Navigator.popUntil(context, ModalRoute.withName('/')),
+        ),
       ),
       body: Stack(
         children: [
           Image.file(
             File(widget.path),
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
-          Center(child: Text(widget.path)),
+          // Center(child: Text(widget.path)),
         ],
       ),
     );
