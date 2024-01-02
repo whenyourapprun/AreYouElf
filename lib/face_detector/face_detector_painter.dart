@@ -15,15 +15,17 @@ class FaceDetectorPainter extends CustomPainter {
   final Size imageSize;
   final InputImageRotation rotation;
   final CameraLensDirection cameraLensDirection;
-  final Color lineColor = Colors.deepPurpleAccent;
+  final Color faceColor = Colors.white;
+  final double faceWidth = 0.2;
+  final Color lineColor = Colors.white;
   final double lineWidth = 6.0;
 
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint1 = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0
-      ..color = Colors.yellow; // 얼굴 테두리 색상
+      ..strokeWidth = faceWidth
+      ..color = faceColor;
 
     final Paint paint2 = Paint()
       ..color = lineColor
@@ -38,6 +40,22 @@ class FaceDetectorPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = lineWidth;
     final Paint paint5 = Paint()
+      ..color = lineColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = lineWidth;
+    final Paint paint6 = Paint()
+      ..color = lineColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = lineWidth;
+    final Paint paint7 = Paint()
+      ..color = lineColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = lineWidth;
+    final Paint paint8 = Paint()
+      ..color = lineColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = lineWidth;
+    final Paint paint9 = Paint()
       ..color = lineColor
       ..strokeCap = StrokeCap.round
       ..strokeWidth = lineWidth;
@@ -86,11 +104,23 @@ class FaceDetectorPainter extends CustomPainter {
       Offset p42 = Offset(left + delta, bottom);
       Offset p51 = Offset(left, bottom);
       Offset p52 = Offset(left, bottom + delta);
+      Offset p61 = Offset(right, bottom);
+      Offset p62 = Offset(right, bottom + delta);
+      Offset p71 = Offset(right, bottom);
+      Offset p72 = Offset(right - delta, bottom);
+      Offset p81 = Offset(right, top);
+      Offset p82 = Offset(right, top - delta);
+      Offset p91 = Offset(right, top);
+      Offset p92 = Offset(right - delta, top);
 
       canvas.drawLine(p21, p22, paint2);
       canvas.drawLine(p31, p32, paint3);
       canvas.drawLine(p41, p42, paint4);
       canvas.drawLine(p51, p52, paint5);
+      canvas.drawLine(p61, p62, paint6);
+      canvas.drawLine(p71, p72, paint7);
+      canvas.drawLine(p81, p82, paint8);
+      canvas.drawLine(p91, p92, paint9);
     }
   }
 
