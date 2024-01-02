@@ -103,8 +103,14 @@ class _CameraViewState extends State<CameraView> {
         bottom: 16,
         left: MediaQuery.of(context).size.width * 0.35,
         child: FloatingActionButton.extended(
-          backgroundColor: seedColor,
+          backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1,
+                color: Colors.white,
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(16))),
           icon: const Icon(Icons.camera),
           onPressed: () async {
             if (_controller != null) {
@@ -124,8 +130,15 @@ class _CameraViewState extends State<CameraView> {
         child: FloatingActionButton(
           heroTag: Object(),
           onPressed: _switchLiveCamera,
-          backgroundColor: seedColor,
+          backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(
+            side: BorderSide(
+              width: 1,
+              color: Colors.white,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
           child: Icon(
             Platform.isIOS
                 ? Icons.flip_camera_ios_outlined
