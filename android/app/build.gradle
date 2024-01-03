@@ -59,6 +59,9 @@ android {
 
     buildTypes {
         release {
+            // pytorch_lite 추가로 설정
+            shrinkResources false
+            minifyEnabled false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
