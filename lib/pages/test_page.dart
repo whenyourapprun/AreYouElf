@@ -77,12 +77,14 @@ class _TestPageState extends State<TestPage> {
         children: [
           objDetect.isNotEmpty
               ? _objectModelYoloV8.renderBoxesOnImage(_image!, objDetect)
-              : Image.asset(
-                  'assets/images/test.jpg',
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  fit: BoxFit.fitHeight,
-                ),
+              : _image == null
+                  ? Image.asset(
+                      'assets/images/test.jpg',
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      fit: BoxFit.fill,
+                    )
+                  : Image.file(_image!),
           Positioned(
             left: 16,
             bottom: 16,
