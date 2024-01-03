@@ -41,6 +41,25 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
             ),
           ),
           // Center(child: Text(widget.path)),
+          Positioned(
+            bottom: 16,
+            left: MediaQuery.of(context).size.width * 0.15,
+            child: FloatingActionButton.extended(
+              backgroundColor: Colors.white30,
+              foregroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 1,
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(16))),
+              icon: const Icon(Icons.analytics),
+              onPressed: () async {
+                debugPrint('button press');
+              },
+              label: const Text('Diagonitics'),
+            ),
+          )
         ],
       ),
     );
