@@ -14,16 +14,16 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
   bool _analyzed = false;
   // 애니메이션
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 1),
+    duration: const Duration(seconds: 5),
     vsync: this,
-  )..repeat(reverse: false);
+  )..repeat(reverse: true);
   late final Animation<double> _animation = CurvedAnimation(
     parent: _controller,
     curve: Curves.linear,
   );
   late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.0, 0.0),
+    begin: const Offset(0.25, 0.0),
+    end: const Offset(0.75, 0.0),
   ).animate(CurvedAnimation(
     parent: _controller,
     curve: Curves.elasticIn,

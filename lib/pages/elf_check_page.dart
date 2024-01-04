@@ -42,9 +42,8 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
             ),
           ),
           // Center(child: Text(widget.path)),
-          Positioned(
-            bottom: 16,
-            left: MediaQuery.of(context).size.width * 0.15,
+          Align(
+            alignment: Alignment.bottomCenter,
             child: FloatingActionButton.extended(
               backgroundColor: Colors.white30,
               foregroundColor: Colors.white,
