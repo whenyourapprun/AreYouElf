@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:are_you_elf/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pytorch_lite/pytorch_lite.dart';
 
 class ElfAnalyzePage extends StatefulWidget {
   const ElfAnalyzePage({super.key, required this.path});
@@ -26,14 +30,59 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
     end: const Offset(0.75, 0.0),
   ).animate(CurvedAnimation(
     parent: _controller,
-    curve: Curves.elasticIn,
+    curve: Curves.linear,
   ));
+  // yolov8
+  late ModelObjectDetection _objectModelYoloV8;
+  String? textToShow;
+  bool objectDetection = false;
+  File? _image;
+  List<ResultObjectDetection?> objDetect = [];
+  // late ByteData imageData;
 
   @override
   void initState() {
     super.initState();
     _analyzed = false;
+    setState(() {
+      _image = File(widget.path);
+    });
+
+    loadModel();
   }
+
+  Future loadModel() async {
+    String pathObjectDetectionModelYolov8 = 'assets/models/elf.torchscript';
+    try {
+      _objectModelYoloV8 = await PytorchLite.loadObjectDetectionModel(
+          pathObjectDetectionModelYolov8, 2, 640, 640,
+          labelPath: 'assets/models/elf.txt',
+          objectDetectionModelType: ObjectDetectionModelType.yolov8);
+    } catch (e) {
+      if (e is PlatformException) {
+        debugPrint('only supported for android, error is $e');
+      } else {
+        debugPrint('Error is $e');
+      }
+    }
+    debugPrint('loadModel');
+  }
+
+  Future runObjectDetectionYoloV8() async {
+    Stopwatch stopwatch = Stopwatch()..start();
+    Uint8List imgData = await _image!.readAsBytes();
+    objDetect = await _objectModelYoloV8.getImagePrediction(imgData,
+        minimumScore: 0.1, iOUThreshold: 0.3);
+    textToShow = inferenceTimeAsString(stopwatch);
+    debugPrint('object executed in ${stopwatch.elapsed.inMilliseconds} ms');
+    for (var element in objDetect) {
+      debugPrint(
+          'score: ${element?.score} className: ${element?.className} class: ${element?.classIndex} rect left: ${element?.rect.left} top: ${element?.rect.top} width: ${element?.rect.width} height: ${element?.rect.height} right: ${element?.rect.right} bottom: ${element?.rect.bottom}');
+    }
+  }
+
+  String inferenceTimeAsString(Stopwatch stopwatch) =>
+      "Inference Took ${stopwatch.elapsed.inMilliseconds} ms";
 
   @override
   void dispose() {
@@ -63,8 +112,8 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
           Positioned(
             top: MediaQuery.of(context).size.height * 0.25,
             left: MediaQuery.of(context).size.width * 0.1,
-            child: ScaleTransition(
-              scale: _animation,
+            child: RotationTransition(
+              turns: _animation,
               child: Image.asset(
                 'assets/images/check_pyramid.png',
                 width: MediaQuery.of(context).size.width * 0.2,
@@ -85,8 +134,8 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
           Positioned(
             top: MediaQuery.of(context).size.height * 0.25,
             right: MediaQuery.of(context).size.width * 0.01,
-            child: ScaleTransition(
-              scale: _animation,
+            child: RotationTransition(
+              turns: _animation,
               child: Image.asset(
                 'assets/images/check_pyramid_1.png',
                 width: MediaQuery.of(context).size.width * 0.3,
@@ -98,7 +147,7 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
             children: [
               SizedBox(height: MediaQuery.of(context).size.height * 0.5),
               Text(
-                _analyzed == true ? 'mbtiAnalyzedCompleted' : 'Analyzing',
+                _analyzed == true ? 'elfAnalyzedCompleted' : 'Analyzing',
                 style: const TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
@@ -109,7 +158,11 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
                 margin: const EdgeInsets.all(16),
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    debugPrint('analyzing touched');
+                    // 실행 시켜 보자
+                    runObjectDetectionYoloV8();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: seedColor,
                     foregroundColor: Colors.white,
@@ -123,7 +176,7 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
                   ),
                   child: Text(
                     _analyzed == true
-                        ? 'mbtiAnalyzedCompletedGuide'
+                        ? 'elfAnalyzedCompletedGuide'
                         : 'Analyzing',
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 18),
