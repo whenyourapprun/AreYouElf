@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:are_you_elf/pages/elf_analyze.dart';
 import 'package:flutter/material.dart';
 
 class ElfCheckPage extends StatefulWidget {
@@ -55,7 +56,14 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
                   borderRadius: BorderRadius.all(Radius.circular(16))),
               icon: const Icon(Icons.analytics),
               onPressed: () async {
-                debugPrint('button press');
+                debugPrint('button press ${widget.path}');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ElfAnalyzePage(
+                      path: widget.path,
+                    ),
+                  ),
+                );
               },
               label: const Text('Diagonitics'),
             ),
