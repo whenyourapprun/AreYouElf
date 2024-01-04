@@ -36,18 +36,14 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
   late ModelObjectDetection _objectModelYoloV8;
   String? textToShow;
   bool objectDetection = false;
-  File? _image;
+  late File _image;
   List<ResultObjectDetection?> objDetect = [];
-  // late ByteData imageData;
 
   @override
   void initState() {
     super.initState();
     _analyzed = false;
-    setState(() {
-      _image = File(widget.path);
-    });
-
+    _image = File(widget.path);
     loadModel();
   }
 
@@ -65,12 +61,12 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
         debugPrint('Error is $e');
       }
     }
-    debugPrint('loadModel');
+    debugPrint('loadModel completed');
   }
 
   Future runObjectDetectionYoloV8() async {
     Stopwatch stopwatch = Stopwatch()..start();
-    Uint8List imgData = await _image!.readAsBytes();
+    Uint8List imgData = await _image.readAsBytes();
     objDetect = await _objectModelYoloV8.getImagePrediction(imgData,
         minimumScore: 0.1, iOUThreshold: 0.3);
     textToShow = inferenceTimeAsString(stopwatch);

@@ -19,7 +19,7 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
       extendBody: true,
       appBar: AppBar(
         title: const Text(
-          'Elf Analyze',
+          'Elf Check',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -42,29 +42,32 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
             ),
           ),
           // Center(child: Text(widget.path)),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: FloatingActionButton.extended(
-              backgroundColor: Colors.white30,
-              foregroundColor: Colors.white,
-              shape: const RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 1,
-                    color: Colors.white,
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(16))),
-              icon: const Icon(Icons.analytics),
-              onPressed: () async {
-                debugPrint('button press ${widget.path}');
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ElfAnalyzePage(
-                      path: widget.path,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: FloatingActionButton.extended(
+                backgroundColor: Colors.white30,
+                foregroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1,
+                      color: Colors.white,
                     ),
-                  ),
-                );
-              },
-              label: const Text('Diagonitics'),
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                icon: const Icon(Icons.analytics),
+                onPressed: () async {
+                  debugPrint('button press ${widget.path}');
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ElfAnalyzePage(
+                        path: widget.path,
+                      ),
+                    ),
+                  );
+                },
+                label: const Text('Diagonitics'),
+              ),
             ),
           )
         ],
