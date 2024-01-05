@@ -63,7 +63,12 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
           _faces > 1
               ? const Align(
                   alignment: Alignment.center,
-                  child: Text('too_many_face'),
+                  child: Text(
+                    'too_many_face',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
                 )
               : const SizedBox(),
         ],
