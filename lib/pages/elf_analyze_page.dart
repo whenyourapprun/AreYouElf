@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:are_you_elf/main.dart';
+import 'package:are_you_elf/pages/elf_result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pytorch_lite/pytorch_lite.dart';
@@ -62,6 +63,8 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
       }
     }
     debugPrint('loadModel completed');
+    // 모델 로딩 되었으니 이제 추론 해보자.
+    runObjectDetectionYoloV8();
   }
 
   Future runObjectDetectionYoloV8() async {
@@ -69,16 +72,16 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
     Uint8List imgData = await _image.readAsBytes();
     objDetect = await _objectModelYoloV8.getImagePrediction(imgData,
         minimumScore: 0.1, iOUThreshold: 0.3);
-    textToShow = inferenceTimeAsString(stopwatch);
     debugPrint('object executed in ${stopwatch.elapsed.inMilliseconds} ms');
+    debugPrint('objDetect ${objDetect.length}');
     for (var element in objDetect) {
       debugPrint(
           'score: ${element?.score} className: ${element?.className} class: ${element?.classIndex} rect left: ${element?.rect.left} top: ${element?.rect.top} width: ${element?.rect.width} height: ${element?.rect.height} right: ${element?.rect.right} bottom: ${element?.rect.bottom}');
     }
+    setState(() {
+      _analyzed = true;
+    });
   }
-
-  String inferenceTimeAsString(Stopwatch stopwatch) =>
-      "Inference Took ${stopwatch.elapsed.inMilliseconds} ms";
 
   @override
   void dispose() {
@@ -156,8 +159,17 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
                 child: ElevatedButton(
                   onPressed: () {
                     debugPrint('analyzing touched');
-                    // 실행 시켜 보자
-                    runObjectDetectionYoloV8();
+                    // 분석이 완료되었으면 결과창으로 이동
+                    if (_analyzed) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ElfResultPage(
+                            path: widget.path,
+                            objDetect: objDetect,
+                          ),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: seedColor,

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:are_you_elf/pages/elf_analyze.dart';
+import 'package:are_you_elf/pages/elf_analyze_page.dart';
 import 'package:flutter/material.dart';
 
 class ElfCheckPage extends StatefulWidget {
