@@ -12,54 +12,83 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenParams.screenSize = MediaQuery.sizeOf(context);
     return Scaffold(
-      // key: GlobalKey(),
-      // backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('당신의 앱이 실행될 때'),
+        title: const Text(
+          '당신의 앱이 실행될 때',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      body: Stack(
         children: [
-          SizedBox(width: MediaQuery.of(context).size.width),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ElfPage(),
-                ),
-              );
-            },
-            child: const Text(
-              'elf detect',
-              style: textButtonStyle,
-            ),
+          Image.asset(
+            'assets/images/elf_bg_1.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ObjectDetectPage(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(width: MediaQuery.of(context).size.width),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white30,
+                  border: Border.all(
+                    color: Colors.white,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
                 ),
-              );
-            },
-            child: const Text(
-              'object detect',
-              style: textButtonStyle,
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const TestPage(),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ElfPage(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'elf detect',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 21,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              );
-            },
-            child: const Text(
-              'yolov8 test',
-              style: textButtonStyle,
-            ),
+              ),
+              // TextButton(
+              //   onPressed: () {
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(
+              //         builder: (context) => const ObjectDetectPage(),
+              //       ),
+              //     );
+              //   },
+              //   child: const Text(
+              //     'object detect',
+              //     style: textButtonStyle,
+              //   ),
+              // ),
+              // TextButton(
+              //   onPressed: () {
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(
+              //         builder: (context) => const TestPage(),
+              //       ),
+              //     );
+              //   },
+              //   child: const Text(
+              //     'yolov8 test',
+              //     style: textButtonStyle,
+              //   ),
+              // ),
+            ],
           ),
         ],
       ),
