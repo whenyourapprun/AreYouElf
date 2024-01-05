@@ -1,8 +1,5 @@
-import 'package:are_you_elf/models/constant.dart';
 import 'package:are_you_elf/models/screen_params.dart';
 import 'package:are_you_elf/pages/elf_page.dart';
-import 'package:are_you_elf/pages/object_detect.dart';
-import 'package:are_you_elf/pages/test_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,7 +11,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          '당신의 앱이 실행될 때',
+          'Are You Elf',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -53,7 +50,7 @@ class HomePage extends StatelessWidget {
                     );
                   },
                   child: const Text(
-                    'elf detect',
+                    'Elf Detect',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 21,
