@@ -15,8 +15,6 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      extendBody: true,
       appBar: AppBar(
         title: const Text(
           'Elf Check',
@@ -30,6 +28,8 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
               Navigator.popUntil(context, ModalRoute.withName('/')),
         ),
       ),
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       body: Stack(
         children: [
           Transform.flip(
@@ -50,11 +50,12 @@ class _ElfCheckPageState extends State<ElfCheckPage> {
                 backgroundColor: Colors.white30,
                 foregroundColor: Colors.white,
                 shape: const RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 1,
-                      color: Colors.white,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                  side: BorderSide(
+                    width: 1,
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
                 icon: const Icon(Icons.analytics),
                 onPressed: () async {
                   debugPrint('button press ${widget.path}');

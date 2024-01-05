@@ -13,13 +13,42 @@ class ElfResultPage extends StatefulWidget {
 }
 
 class _ElfResultPageState extends State<ElfResultPage> {
+  String _result = 'Your Human';
+
+  @override
+  void initState() {
+    super.initState();
+    for (var element in widget.objDetect) {
+      debugPrint('score: ${element?.score} className: ${element?.className}');
+      if (element?.className == 'elf') {
+        _result = 'Your Elf';
+      }
+    }
+    if (widget.objDetect.isNotEmpty) {
+      setState(() {
+        _result;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Elf Result'),
+        title: const Text(
+          'Elf Result',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () =>
+              Navigator.popUntil(context, ModalRoute.withName('/')),
+        ),
       ),
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       body: Stack(
         children: [
           Transform.flip(
@@ -31,8 +60,27 @@ class _ElfResultPageState extends State<ElfResultPage> {
               height: double.infinity,
             ),
           ),
-          const Center(
-            child: Text('data'),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white30,
+                  border: Border.all(
+                    color: Colors.white,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                ),
+                child: Text(
+                  _result,
+                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
           ),
         ],
       ),
