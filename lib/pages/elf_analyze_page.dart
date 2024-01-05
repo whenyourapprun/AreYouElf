@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:are_you_elf/main.dart';
 import 'package:are_you_elf/pages/elf_result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -97,6 +95,12 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
       backgroundColor: Colors.white,
       body: Stack(
         children: [
+          Image.asset(
+            'assets/images/elf_bg_3.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
           Positioned(
             top: MediaQuery.of(context).size.height * 0.05,
             left: MediaQuery.of(context).size.width * 0.01,
@@ -146,9 +150,10 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
             children: [
               SizedBox(height: MediaQuery.of(context).size.height * 0.5),
               Text(
-                _analyzed == true ? 'elfAnalyzedCompleted' : 'Analyzing',
+                _analyzed == true ? 'Completed' : 'Analyzing',
                 style: const TextStyle(
-                  fontSize: 48,
+                  color: Colors.white,
+                  fontSize: 38,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -172,20 +177,22 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: seedColor,
+                    backgroundColor: Colors.white30,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       vertical: 16,
                       horizontal: 64,
                     ),
                     shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        width: 1,
+                        color: Colors.white,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                   child: Text(
-                    _analyzed == true
-                        ? 'elfAnalyzedCompletedGuide'
-                        : 'Analyzing',
+                    _analyzed == true ? 'Go Result' : 'Ready',
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 18),
                   ),
