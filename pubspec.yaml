@@ -20,6 +20,9 @@ dependencies:
   exif: ^3.3.0
   google_fonts: ^6.1.0
   pytorch_lite: ^4.2.4
+  flutter_native_splash: ^2.3.9
+  app_tracking_transparency: ^2.0.4
+  google_mobile_ads: ^4.0.0
 
 dev_dependencies:
   flutter_test:
