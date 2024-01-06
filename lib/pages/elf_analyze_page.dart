@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:are_you_elf/pages/elf_result_page.dart';
+import 'package:are_you_elf/utils/admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:pytorch_lite/pytorch_lite.dart';
 
 class ElfAnalyzePage extends StatefulWidget {
@@ -37,11 +39,15 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
   bool objectDetection = false;
   late File _image;
   List<ResultObjectDetection?> objDetect = [];
+  // 애드몹 광고
+  RewardedAd? _rewardedAd;
 
   @override
   void initState() {
     super.initState();
     _analyzed = false;
+    // admob
+    _loadRewardedAd();
     _image = File(widget.path);
     loadModel();
   }
@@ -79,6 +85,33 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
     setState(() {
       _analyzed = true;
     });
+  }
+
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: rewarded[Platform.isIOS ? 'ios' : 'android']!,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          // 광고 로딩 되면
+          debugPrint('rainAd loaded');
+          setState(() {
+            _rewardedAd = ad;
+          });
+          // 광고 시청 완료
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad1) {
+              // 광고 시청을 완료해도 다시 요청하지 않는다.
+              ad1.dispose();
+            },
+          );
+        },
+        onAdFailedToLoad: (err) {
+          debugPrint(
+              'Failed to load a personalcolorRewarded ad ${err.message}');
+        },
+      ),
+    );
   }
 
   @override
@@ -164,17 +197,19 @@ class _ElfAnalyzePageState extends State<ElfAnalyzePage>
                 child: ElevatedButton(
                   onPressed: () {
                     debugPrint('analyzing touched');
-                    // 분석이 완료되었으면 결과창으로 이동
-                    if (_analyzed) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ElfResultPage(
-                            path: widget.path,
-                            objDetect: objDetect,
+                    _rewardedAd!.show(onUserEarnedReward: (_, reward) {
+                      // 분석이 완료되었으면 결과창으로 이동
+                      if (_analyzed) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ElfResultPage(
+                              path: widget.path,
+                              objDetect: objDetect,
+                            ),
                           ),
-                        ),
-                      );
-                    }
+                        );
+                      }
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white30,
