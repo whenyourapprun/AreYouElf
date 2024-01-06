@@ -1,9 +1,24 @@
 import 'package:are_you_elf/models/screen_params.dart';
 import 'package:are_you_elf/pages/elf_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    // 로딩 후 스플래시 화면 제거
+    Future.delayed(const Duration(milliseconds: 800), () {
+      FlutterNativeSplash.remove();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
