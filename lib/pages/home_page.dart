@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
       body: Stack(
         children: [
           Image.asset(
-            'assets/images/elf_bg_4.png',
+            'assets/images/elf_bg_3.png',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
