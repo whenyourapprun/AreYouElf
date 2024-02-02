@@ -75,11 +75,10 @@ image_lib.Image convertBGRA8888ToImage(CameraImage cameraImage) {
 
   // Create a new Image instance
   final image = image_lib.Image.fromBytes(
-    width: cameraImage.width,
-    height: cameraImage.height,
-    bytes: bytes.buffer,
-    order: image_lib.ChannelOrder.rgba,
-  );
+      width: cameraImage.width,
+      height: cameraImage.height,
+      bytes: bytes.buffer,
+      order: image_lib.ChannelOrder.rgba);
 
   return image;
 }
@@ -100,19 +99,12 @@ image_lib.Image convertNV21ToImage(CameraImage cameraImage) {
   final vuBytes = cameraImage.planes[1].bytes;
 
   // Create a new Image instance
-  final image = image_lib.Image(
-    width: cameraImage.width,
-    height: cameraImage.height,
-  );
+  final image =
+      image_lib.Image(width: cameraImage.width, height: cameraImage.height);
 
   // Convert NV21 to RGB
   convertNV21ToRGB(
-    yuvBytes,
-    vuBytes,
-    cameraImage.width,
-    cameraImage.height,
-    image,
-  );
+      yuvBytes, vuBytes, cameraImage.width, cameraImage.height, image);
 
   return image;
 }
@@ -168,11 +160,7 @@ image_lib.Image applyExifRotation(image_lib.Image image, int exifRotation) {
   return image;
 }
 
-Future<void> saveImage(
-  image_lib.Image image,
-  String path,
-  String name,
-) async {
+Future<void> saveImage(image_lib.Image image, String path, String name) async {
   Uint8List bytes = image_lib.encodeJpg(image);
   final fileOnDevice = File('$path/$name.jpg');
   await fileOnDevice.writeAsBytes(bytes, flush: true);
