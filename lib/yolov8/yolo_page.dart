@@ -16,7 +16,6 @@ class YoloPage extends StatefulWidget {
 class _YoloPageState extends State<YoloPage> {
   static const inModelWidth = 640;
   static const inModelHeight = 640;
-
   static const double maxImageWidgetHeight = 400;
 
   final YoloModel model = YoloModel(
@@ -26,7 +25,6 @@ class _YoloPageState extends State<YoloPage> {
     inModelHeight,
   );
   File? imageFile;
-
   double confidenceThreshold = 0.4;
   double iouThreshold = 0.1;
 
@@ -50,11 +48,8 @@ class _YoloPageState extends State<YoloPage> {
       model.labels.length,
       (_) => Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
     );
-
     final ImagePicker picker = ImagePicker();
-
     final double displayWidth = MediaQuery.of(context).size.width;
-
     double resizeFactor = 1;
 
     if (imageWidth != null && imageHeight != null) {
@@ -69,13 +64,14 @@ class _YoloPageState extends State<YoloPage> {
       final boxClass = classes[i];
       bboxesWidgets.add(
         Bbox(
-            box[0] * resizeFactor,
-            box[1] * resizeFactor,
-            box[2] * resizeFactor,
-            box[3] * resizeFactor,
-            model.labels[boxClass],
-            scores[i],
-            bboxesColors[boxClass]),
+          box[0] * resizeFactor,
+          box[1] * resizeFactor,
+          box[2] * resizeFactor,
+          box[3] * resizeFactor,
+          model.labels[boxClass],
+          scores[i],
+          bboxesColors[boxClass],
+        ),
       );
     }
 
