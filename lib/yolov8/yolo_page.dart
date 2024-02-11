@@ -17,15 +17,16 @@ class YoloPage extends StatefulWidget {
 class _YoloPageState extends State<YoloPage> {
   static const inModelWidth = 640;
   static const inModelHeight = 640;
-  static const numClasses = 80;
+  // static const numClasses = 80;
 
   static const double maxImageWidgetHeight = 400;
 
   final YoloModel model = YoloModel(
     'assets/models/yolov8n.tflite',
+    'assets/models/yolov8n.txt',
     inModelWidth,
     inModelHeight,
-    numClasses,
+    // numClasses,
   );
   File? imageFile;
 
@@ -58,7 +59,7 @@ class _YoloPageState extends State<YoloPage> {
   @override
   Widget build(BuildContext context) {
     final bboxesColors = List<Color>.generate(
-      numClasses,
+      model.getNumClasses(),
       (_) => Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
     );
 

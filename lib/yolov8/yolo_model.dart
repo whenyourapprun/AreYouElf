@@ -1,24 +1,33 @@
 import 'package:are_you_elf/yolov8/nms.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart';
 
 class YoloModel {
   final String modelPath;
+  final String labelPath;
   final int inWidth;
   final int inHeight;
-  final int numClasses;
+  // final int numClasses;
   Interpreter? _interpreter;
+  List<String>? _labels;
 
   YoloModel(
     this.modelPath,
+    this.labelPath,
     this.inWidth,
     this.inHeight,
-    this.numClasses,
+    // this.numClasses,
   );
 
   Future<void> init() async {
     _interpreter = await Interpreter.fromAsset(modelPath);
+    _labels = (await rootBundle.loadString(labelPath)).split('\n');
+  }
+
+  int getNumClasses() {
+    return _labels?.length ?? 0;
   }
 
   List<List<double>> infer(Image image) {
@@ -41,12 +50,14 @@ class YoloModel {
     // 4 + 80: left, top, right, bottom and probabilities for each class
     // 8400: num predictions
     final output = [
-      List<List<double>>.filled(4 + numClasses, List<double>.filled(8400, 0))
+      List<List<double>>.filled(
+          4 + _labels!.length, List<double>.filled(8400, 0))
     ];
     int predictionTimeStart = DateTime.now().millisecondsSinceEpoch;
     _interpreter!.run([imgNormalized], output);
-    debugPrint(
-        'Prediction time: ${DateTime.now().millisecondsSinceEpoch - predictionTimeStart} ms');
+    int predictionTime =
+        DateTime.now().millisecondsSinceEpoch - predictionTimeStart;
+    debugPrint('Prediction time: $predictionTime ms');
     return output[0];
   }
 
