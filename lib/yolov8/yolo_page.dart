@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:are_you_elf/yolov8/bbox.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:are_you_elf/yolov8/yolo_model.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,6 @@ class YoloPage extends StatefulWidget {
 class _YoloPageState extends State<YoloPage> {
   static const inModelWidth = 640;
   static const inModelHeight = 640;
-  // static const numClasses = 80;
 
   static const double maxImageWidgetHeight = 400;
 
@@ -26,7 +24,6 @@ class _YoloPageState extends State<YoloPage> {
     'assets/models/yolov8n.txt',
     inModelWidth,
     inModelHeight,
-    // numClasses,
   );
   File? imageFile;
 
@@ -37,7 +34,6 @@ class _YoloPageState extends State<YoloPage> {
   List<int> classes = [];
   List<List<double>> bboxes = [];
   List<double> scores = [];
-  late List<String> labels;
 
   int? imageWidth;
   int? imageHeight;
@@ -46,20 +42,12 @@ class _YoloPageState extends State<YoloPage> {
   void initState() {
     super.initState();
     model.init();
-    () async {
-      _loadLabels();
-    }();
-  }
-
-  Future<void> _loadLabels() async {
-    const String labelPath = 'assets/models/yolov8n.txt';
-    labels = (await rootBundle.loadString(labelPath)).split('\n');
   }
 
   @override
   Widget build(BuildContext context) {
     final bboxesColors = List<Color>.generate(
-      model.getNumClasses(),
+      model.labels.length,
       (_) => Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
     );
 
@@ -85,7 +73,7 @@ class _YoloPageState extends State<YoloPage> {
             box[1] * resizeFactor,
             box[2] * resizeFactor,
             box[3] * resizeFactor,
-            labels[boxClass],
+            model.labels[boxClass],
             scores[i],
             bboxesColors[boxClass]),
       );

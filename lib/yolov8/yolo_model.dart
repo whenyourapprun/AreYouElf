@@ -11,7 +11,7 @@ class YoloModel {
   final int inHeight;
   // final int numClasses;
   Interpreter? _interpreter;
-  List<String>? _labels;
+  List<String> labels = [];
 
   YoloModel(
     this.modelPath,
@@ -23,11 +23,7 @@ class YoloModel {
 
   Future<void> init() async {
     _interpreter = await Interpreter.fromAsset(modelPath);
-    _labels = (await rootBundle.loadString(labelPath)).split('\n');
-  }
-
-  int getNumClasses() {
-    return _labels?.length ?? 0;
+    labels = (await rootBundle.loadString(labelPath)).split('\n');
   }
 
   List<List<double>> infer(Image image) {
@@ -50,8 +46,7 @@ class YoloModel {
     // 4 + 80: left, top, right, bottom and probabilities for each class
     // 8400: num predictions
     final output = [
-      List<List<double>>.filled(
-          4 + _labels!.length, List<double>.filled(8400, 0))
+      List<List<double>>.filled(4 + labels.length, List<double>.filled(8400, 0))
     ];
     int predictionTimeStart = DateTime.now().millisecondsSinceEpoch;
     _interpreter!.run([imgNormalized], output);
