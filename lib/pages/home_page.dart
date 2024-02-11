@@ -78,19 +78,6 @@ class _HomePageState extends State<HomePage> {
               //   onPressed: () {
               //     Navigator.of(context).push(
               //       MaterialPageRoute(
-              //         builder: (context) => const ObjectDetectPage(),
-              //       ),
-              //     );
-              //   },
-              //   child: const Text(
-              //     'object detect',
-              //     style: textButtonStyle,
-              //   ),
-              // ),
-              // TextButton(
-              //   onPressed: () {
-              //     Navigator.of(context).push(
-              //       MaterialPageRoute(
               //         builder: (context) => const TestPage(),
               //       ),
               //     );

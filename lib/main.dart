@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:are_you_elf/pages/home_page.dart';
 import 'package:camera/camera.dart';
