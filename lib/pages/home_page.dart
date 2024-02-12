@@ -1,8 +1,9 @@
 import 'package:are_you_elf/models/screen_params.dart';
 import 'package:are_you_elf/pages/elf_page.dart';
-import 'package:are_you_elf/yolov8/yolo_page.dart';
+import 'package:are_you_elf/real_time/real_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_vision/flutter_vision.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,13 +13,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FlutterVision vision = FlutterVision();
+
   @override
   void initState() {
     super.initState();
+    vision = FlutterVision();
     // 로딩 후 스플래시 화면 제거
     Future.delayed(const Duration(milliseconds: 800), () {
       FlutterNativeSplash.remove();
     });
+  }
+
+  @override
+  void dispose() async {
+    super.dispose();
+    await vision.closeYoloModel();
   }
 
   @override
@@ -66,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                   child: const Text(
-                    'Elf Detect',
+                    'Precise Diagnosis',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 21,
@@ -90,12 +100,14 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const YoloPage(),
+                        builder: (context) => RealTimePage(
+                          vision: vision,
+                        ),
                       ),
                     );
                   },
                   child: const Text(
-                    'yolov8',
+                    'Real-time diagnosis',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 21,
