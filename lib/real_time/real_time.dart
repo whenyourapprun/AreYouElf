@@ -145,9 +145,11 @@ class _RealTimePageState extends State<RealTimePage> {
         confThreshold: 0.4,
         classThreshold: 0.5);
     if (result.isNotEmpty) {
-      setState(() {
-        yoloResults = result;
-      });
+      if (mounted) {
+        setState(() {
+          yoloResults = result;
+        });
+      }
     }
   }
 
