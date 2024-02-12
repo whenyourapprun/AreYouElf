@@ -61,7 +61,7 @@ class _RealTimePageState extends State<RealTimePage> {
     if (!isLoaded) {
       return const Scaffold(
         body: Center(
-          child: Text("Model not loaded, waiting for it"),
+          child: Text("Please wait a moment."),
         ),
       );
     }
@@ -125,8 +125,8 @@ class _RealTimePageState extends State<RealTimePage> {
 
   Future<void> loadYoloModel() async {
     await widget.vision.loadYoloModel(
-      labels: 'assets/models/yolov8n.txt',
-      modelPath: 'assets/models/yolov8n.tflite',
+      labels: 'assets/models/elf.txt',
+      modelPath: 'assets/models/elf.tflite',
       modelVersion: 'yolov8',
       numThreads: 2, // 4 로 올려도 빠른지 모르겠음
       useGpu: false, // true 설정하면 오류남, 폰에 없는거 같음
