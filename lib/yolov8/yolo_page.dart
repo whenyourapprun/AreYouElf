@@ -19,8 +19,8 @@ class _YoloPageState extends State<YoloPage> {
   static const double maxImageWidgetHeight = 400;
 
   final YoloModel model = YoloModel(
-    'assets/models/yolov8n.tflite',
-    'assets/models/yolov8n.txt',
+    'assets/models/elf.tflite',
+    'assets/models/elf.txt',
     inModelWidth,
     inModelHeight,
   );
