@@ -1,17 +1,18 @@
 import 'dart:math';
 
-(List<int>, List<List<double>>, List<double>) nms(List<List<double>> rawOutput,
-    {double confidenceThreshold = 0.7, double iouThreshold = 0.4}) {
+(List<int>, List<List<double>>, List<double>) nms(
+    List<List<double>> rawOutput, int count,
+    {double confidenceThreshold = 0.1, double iouThreshold = 0.4}) {
   List<int> bestClasses = [];
   List<double> bestScores = [];
-
   List<int> boxesToSave = [];
 
   // Take the argmax to the determine the best classes and scores
+  // korail_lens 55 yolov8n 84
   for (int i = 0; i < 8400; i++) {
     double bestScore = 0;
     int bestCls = -1;
-    for (int j = 4; j < 84; j++) {
+    for (int j = 4; j < count; j++) {
       double clsScore = rawOutput[j][i];
       if (clsScore > bestScore) {
         bestScore = clsScore;

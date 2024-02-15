@@ -1,10 +1,10 @@
-import 'dart:io';
-import 'dart:math';
+import 'dart:async';
+import 'package:are_you_elf/main.dart';
+import 'package:are_you_elf/models/screen_params.dart';
 import 'package:are_you_elf/yolov8/bbox.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:are_you_elf/yolov8/yolo_model.dart';
+import 'package:are_you_elf/yolov8/detector_service.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 
 class YoloPage extends StatefulWidget {
   const YoloPage({super.key});
@@ -13,164 +13,154 @@ class YoloPage extends StatefulWidget {
   State<YoloPage> createState() => _YoloPageState();
 }
 
-class _YoloPageState extends State<YoloPage> {
-  static const inModelWidth = 640;
-  static const inModelHeight = 640;
-  static const double maxImageWidgetHeight = 400;
+class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
+  CameraController? _cameraController;
+  // use only when initialized, so - not null
+  get _controller => _cameraController;
+  Detector? _detector;
+  StreamSubscription? _subscription;
+  int _cameraIndex = -1;
+  final CameraLensDirection initialCameraLensDirection =
+      CameraLensDirection.front;
 
-  final YoloModel model = YoloModel(
-    'assets/models/yolov8n.tflite',
-    'assets/models/yolov8n.txt',
-    inModelWidth,
-    inModelHeight,
-  );
-  File? imageFile;
-  double confidenceThreshold = 0.4;
-  double iouThreshold = 0.1;
-
-  List<List<double>>? inferenceOutput;
-  List<int> classes = [];
+  List<String> classes = [];
   List<List<double>> bboxes = [];
   List<double> scores = [];
-
-  int? imageWidth;
-  int? imageHeight;
 
   @override
   void initState() {
     super.initState();
-    model.init();
+    WidgetsBinding.instance.addObserver(this);
+    _initStateAsync();
+  }
+
+  void _initStateAsync() async {
+    // initialize preview and CameraImage stream
+    _initializeCamera();
+    // Spawn a new isolate
+    Detector.start().then((instance) {
+      setState(() {
+        _detector = instance;
+        _subscription = instance.resultsStream.stream.listen((values) {
+          // debugPrint('cls ${values['cls']}');
+          // debugPrint('box ${values['box']}');
+          debugPrint('conf ${values['conf']}');
+          debugPrint('stats ${values['stats']}');
+          // debugPrint('threads ${Platform.numberOfProcessors}');
+          setState(() {
+            classes = values['cls'];
+            bboxes = values['box'];
+            scores = values['conf'];
+          });
+        });
+      });
+    });
+  }
+
+  void _initializeCamera() async {
+    for (var i = 0; i < pcameras.length; i++) {
+      if (pcameras[i].lensDirection == initialCameraLensDirection) {
+        _cameraIndex = i;
+        break;
+      }
+    }
+    final camera = pcameras[_cameraIndex];
+    // cameras[0] for back-camera
+    _cameraController = CameraController(
+      camera,
+      ResolutionPreset.low,
+      enableAudio: false,
+    )..initialize().then((_) async {
+        await _controller.startImageStream(onLatestImageAvailable);
+        setState(() {});
+        ScreenParams.previewSize = _controller.value.previewSize!;
+      });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.inactive:
+        _cameraController?.stopImageStream();
+        _detector?.stop();
+        _subscription?.cancel();
+        break;
+      case AppLifecycleState.resumed:
+        _initStateAsync();
+        break;
+      default:
+    }
+  }
+
+  void onLatestImageAvailable(CameraImage cameraImage) async {
+    _detector?.processFrame(cameraImage);
+  }
+
+  Widget _boundingBoxes() {
+    final double displayWidth = MediaQuery.of(context).size.width;
+    final double displayHeight = MediaQuery.of(context).size.height;
+    List<Bbox> bboxesWidgets = [];
+    for (int i = 0; i < bboxes.length; i++) {
+      // box 좌표는 xywh 임, 고로 (xCenter, yCenter, xWidth, yHeight)
+      bboxesWidgets.add(
+        Bbox(
+          displayWidth: displayWidth,
+          displayHeight: displayHeight,
+          box: bboxes[i],
+          name: classes[i],
+          score: scores[i],
+        ),
+      );
+    }
+    // debugPrint('bboxesWidgets ${bboxesWidgets.length}');
+    return Stack(children: bboxesWidgets);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _cameraController?.dispose();
+    _detector?.stop();
+    _subscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bboxesColors = List<Color>.generate(
-      model.labels.length,
-      (_) => Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-    );
-    final ImagePicker picker = ImagePicker();
-    final double displayWidth = MediaQuery.of(context).size.width;
-    double resizeFactor = 1;
-
-    if (imageWidth != null && imageHeight != null) {
-      double k1 = displayWidth / imageWidth!;
-      double k2 = maxImageWidgetHeight / imageHeight!;
-      resizeFactor = min(k1, k2);
+    if (_cameraController == null || !_controller.value.isInitialized) {
+      return const SizedBox.shrink();
     }
-
-    List<Bbox> bboxesWidgets = [];
-    for (int i = 0; i < bboxes.length; i++) {
-      final box = bboxes[i];
-      final boxClass = classes[i];
-      bboxesWidgets.add(
-        Bbox(
-          box[0] * resizeFactor,
-          box[1] * resizeFactor,
-          box[2] * resizeFactor,
-          box[3] * resizeFactor,
-          model.labels[boxClass],
-          scores[i],
-          bboxesColors[boxClass],
-        ),
-      );
-    }
-
+    var aspect = 1 / _controller.value.aspectRatio;
     return Scaffold(
-      appBar: AppBar(title: const Text('YOLO')),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.image_outlined),
-        onPressed: () async {
-          final XFile? newImageFile =
-              await picker.pickImage(source: ImageSource.gallery);
-          if (newImageFile != null) {
-            setState(() {
-              imageFile = File(newImageFile.path);
-            });
-            final image = img.decodeImage(await newImageFile.readAsBytes())!;
-            imageWidth = image.width;
-            imageHeight = image.height;
-            inferenceOutput = model.infer(image);
-            updatePostprocess();
-          }
-        },
+      appBar: AppBar(
+        title: const Text('테스트 탐지'),
+        centerTitle: true,
+        backgroundColor: Colors.black38,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () =>
+              Navigator.popUntil(context, ModalRoute.withName("/")),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
       ),
-      body: ListView(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          SizedBox(
-            height: maxImageWidgetHeight,
-            child: Center(
-              child: Stack(
-                children: [
-                  if (imageFile != null) Image.file(imageFile!),
-                  ...bboxesWidgets,
-                ],
-              ),
-            ),
+          AspectRatio(
+            aspectRatio: aspect,
+            child: CameraPreview(_controller),
           ),
-          const SizedBox(height: 30),
-          const Center(
-            child: Text(
-              'Confidence threshold',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-          Slider(
-            value: confidenceThreshold,
-            min: 0,
-            max: 1,
-            divisions: 100,
-            label: confidenceThreshold.toStringAsFixed(2),
-            onChanged: (value) {
-              setState(() {
-                confidenceThreshold = value;
-                updatePostprocess();
-              });
-            },
-          ),
-          const SizedBox(height: 30),
-          const Center(
-            child: Text(
-              'IoU threshold',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-          Slider(
-            value: iouThreshold,
-            min: 0,
-            max: 1,
-            divisions: 100,
-            label: iouThreshold.toStringAsFixed(2),
-            onChanged: (value) {
-              setState(() {
-                iouThreshold = value;
-                updatePostprocess();
-              });
-            },
+          AspectRatio(
+            aspectRatio: aspect,
+            child: _boundingBoxes(),
           ),
         ],
       ),
     );
-  }
-
-  void updatePostprocess() {
-    if (inferenceOutput == null) {
-      return;
-    }
-    List<int> newClasses = [];
-    List<List<double>> newBboxes = [];
-    List<double> newScores = [];
-    (newClasses, newBboxes, newScores) = model.postprocess(
-      inferenceOutput!,
-      imageWidth!,
-      imageHeight!,
-      confidenceThreshold: confidenceThreshold,
-      iouThreshold: iouThreshold,
-    );
-    debugPrint('Detected ${bboxes.length} bboxes');
-    setState(() {
-      classes = newClasses;
-      bboxes = newBboxes;
-      scores = newScores;
-    });
   }
 }
