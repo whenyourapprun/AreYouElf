@@ -68,7 +68,7 @@ class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
     // cameras[0] for back-camera
     _cameraController = CameraController(
       camera,
-      ResolutionPreset.low,
+      ResolutionPreset.high,
       enableAudio: false,
     )..initialize().then((_) async {
         await _controller.startImageStream(onLatestImageAvailable);
