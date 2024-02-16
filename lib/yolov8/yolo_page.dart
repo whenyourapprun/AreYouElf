@@ -21,7 +21,7 @@ class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
   StreamSubscription? _subscription;
   int _cameraIndex = -1;
   final CameraLensDirection initialCameraLensDirection =
-      CameraLensDirection.back;
+      CameraLensDirection.front;
 
   List<String> classes = [];
   List<List<double>> bboxes = [];

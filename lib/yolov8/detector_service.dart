@@ -20,10 +20,10 @@ class _Command {
 }
 
 class Detector {
-  // static const String _modelPath = 'assets/models/elf.tflite';
-  // static const String _labelPath = 'assets/models/elf.txt';
-  static const String _modelPath = 'assets/models/yolov8n.tflite';
-  static const String _labelPath = 'assets/models/yolov8n.txt';
+  static const String _modelPath = 'assets/models/elf_int8.tflite';
+  static const String _labelPath = 'assets/models/elf.txt';
+  // static const String _modelPath = 'assets/models/yolov8n.tflite';
+  // static const String _labelPath = 'assets/models/yolov8n.txt';
 
   Detector._(this._isolate, this._interpreter, this._labels);
 
@@ -193,7 +193,7 @@ class _DetectorServer {
     final numOfLabels = _labels?.length ?? 0;
     final count = numOfLabels + 4;
     (idx, box, conf) =
-        nms(rawOutput, count, confidenceThreshold: 0.3, iouThreshold: 0.4);
+        nms(rawOutput, count, confidenceThreshold: 0.1, iouThreshold: 0.4);
     // debugPrint('cls $cls box $box conf $conf');
     if (idx.isNotEmpty) {
       cls = idx.map((e) => _labels![e]).toList();

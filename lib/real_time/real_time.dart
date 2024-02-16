@@ -177,8 +177,12 @@ class _RealTimePageState extends State<RealTimePage> {
 
   List<Widget> displayBoxesAroundRecognizedObjects(Size screen) {
     if (yoloResults.isEmpty) return [];
-    double factorX = screen.width / (cameraImage?.height ?? 1);
-    double factorY = screen.height / (cameraImage?.width ?? 1);
+    debugPrint('box ${yoloResults.first['box']}');
+    debugPrint('width ${screen.width} ${cameraImage?.height}');
+    debugPrint('height ${screen.height} ${cameraImage?.width}');
+    double factorX = screen.width / (cameraImage?.width ?? 1);
+    double factorY = screen.height / (cameraImage?.height ?? 1);
+    debugPrint('top ${yoloResults.first['box'][0] * factorX}');
 
     return yoloResults.map((result) {
       return Positioned(
