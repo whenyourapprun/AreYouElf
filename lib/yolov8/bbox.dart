@@ -1,35 +1,32 @@
+import 'package:are_you_elf/models/screen_params.dart';
 import 'package:flutter/material.dart';
 
 class Bbox extends StatelessWidget {
   const Bbox({
     super.key,
-    required this.displayWidth,
-    required this.displayHeight,
     required this.box,
     required this.name,
     required this.score,
   });
-  final double displayWidth;
-  final double displayHeight;
   final List<double> box;
   final String name;
   final double score;
 
   @override
   Widget build(BuildContext context) {
-    final double width = box[2] * displayWidth;
-    final double height = box[3] * displayHeight;
-    final double left = (box[0] * displayWidth) - (width / 2);
-    final double top = (box[1] * displayHeight) - (height / 2);
-    // debugPrint('box $box name $name score $score');
+    final double width = box[2] * ScreenParams.screenSize.width;
+    final double height = box[3] * ScreenParams.screenSize.height;
+    final double left = (box[0] * ScreenParams.screenSize.width) - (width / 2);
+    final double top = (box[1] * ScreenParams.screenSize.height) - (height / 2);
+    debugPrint('$box $name $score');
     return Positioned(
-      left: left < 0 ? 0 : left,
-      top: top < 0 ? 0 : top,
-      width: left + width > displayWidth ? displayWidth - left : width,
-      height: top + height > displayHeight ? displayHeight - top : height,
+      left: left,
+      top: top,
+      width: width,
+      height: height,
       child: Container(
-        width: left + width > displayWidth ? displayWidth - left : width,
-        height: top + height > displayHeight ? displayHeight - top : height,
+        width: width,
+        height: height,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white, width: 1),
         ),

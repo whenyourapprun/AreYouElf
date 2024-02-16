@@ -21,7 +21,7 @@ class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
   StreamSubscription? _subscription;
   int _cameraIndex = -1;
   final CameraLensDirection initialCameraLensDirection =
-      CameraLensDirection.front;
+      CameraLensDirection.back;
 
   List<String> classes = [];
   List<List<double>> bboxes = [];
@@ -97,15 +97,11 @@ class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
   }
 
   Widget _boundingBoxes() {
-    final double displayWidth = MediaQuery.of(context).size.width;
-    final double displayHeight = MediaQuery.of(context).size.height;
     List<Bbox> bboxesWidgets = [];
     for (int i = 0; i < bboxes.length; i++) {
       // box 좌표는 xywh 임, 고로 (xCenter, yCenter, xWidth, yHeight)
       bboxesWidgets.add(
         Bbox(
-          displayWidth: displayWidth,
-          displayHeight: displayHeight,
           box: bboxes[i],
           name: classes[i],
           score: scores[i],
