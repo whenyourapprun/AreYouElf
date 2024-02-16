@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'package:are_you_elf/models/screen_params.dart';
 import 'package:are_you_elf/utils/image_utils.dart';
 import 'package:are_you_elf/yolov8/nms.dart';
 import 'package:camera/camera.dart';
@@ -105,7 +104,7 @@ class Detector {
 }
 
 class _DetectorServer {
-  static const int mlModelInputSize = 640;
+  static const int mlModelInputSize = 224; //640;
   Interpreter? _interpreter;
   List<String>? _labels;
 
@@ -219,14 +218,14 @@ class _DetectorServer {
   }
 
   List<Object> _runInference(List<List<List<num>>> imageMatrix) {
-    // Set input tensor [1, 640, 640, 3]
+    // Set input tensor [1, 640, 640, 3] [1, 3, 640, 640]
     final input = [imageMatrix];
     // debugPrint('input $input');
-    // korail_lens [1, 55, 8400] yolov8n [1, 84, 8400]
+    // korail_lens [1, 55, 8400] yolov8n [1, 84, 8400] [1, 6, 1029]
     final numOfLabels = _labels?.length ?? 0;
     final count = numOfLabels + 4;
     final outputs =
-        List<num>.filled(1 * count * 8400, 0).reshape([1, count, 8400]);
+        List<num>.filled(1 * count * 1029, 0).reshape([1, count, 1029]);
     var map = <int, Object>{};
     map[0] = outputs;
     _interpreter!.runForMultipleInputs([input], map);
