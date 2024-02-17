@@ -19,10 +19,8 @@ class _Command {
 }
 
 class Detector {
-  static const String _modelPath = 'assets/models/elf_int8.tflite';
+  static const String _modelPath = 'assets/models/elf.tflite';
   static const String _labelPath = 'assets/models/elf.txt';
-  // static const String _modelPath = 'assets/models/yolov8n.tflite';
-  // static const String _labelPath = 'assets/models/yolov8n.txt';
 
   Detector._(this._isolate, this._interpreter, this._labels);
 
