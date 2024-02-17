@@ -129,7 +129,7 @@ class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
     var aspect = 1 / _controller.value.aspectRatio;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('테스트 탐지'),
+        title: const Text('RealTime Test'),
         centerTitle: true,
         backgroundColor: Colors.black38,
         foregroundColor: Colors.white,

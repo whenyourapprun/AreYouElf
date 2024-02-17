@@ -102,7 +102,7 @@ class Detector {
 }
 
 class _DetectorServer {
-  static const int mlModelInputSize = 224; //640;
+  int mlModelInputSize = 640; // 이미지 사이즈, 설정 없으면 기본 사용
   Interpreter? _interpreter;
   List<String>? _labels;
 
@@ -127,6 +127,9 @@ class _DetectorServer {
             command.args?[0] as RootIsolateToken;
         BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
         _interpreter = Interpreter.fromAddress(command.args?[1] as int);
+        // [1,224, 224, 3] 이면 224 가져와서 설정
+        mlModelInputSize =
+            _interpreter?.getInputTensors().first.shape[1] ?? 640;
         _labels = command.args?[2] as List<String>;
         _sendPort.send(const _Command(_Codes.ready));
       case _Codes.detect:
@@ -178,10 +181,20 @@ class _DetectorServer {
 
     final output = _runInference(imageMatrix);
 
+    //*/
     // 드디어 가져왔음,, ㅎㅎㅎㅎ 이제 nms 로 여기서 결과를 추출하면 된다.
     List<List<double>> rawOutput =
         (output.first as List).first as List<List<double>>;
-    // korail_lens [1, 55, 8400] yolov8n [1 84 8400] 에서 값 추출하기
+    // List<List<double>> rawOutput = [];
+    // for (var object in output) {
+    //   // debugPrint('object length ${(object as List).length}');
+    //   List obj = object as List;
+    //   for (var o in obj) {
+    //     // debugPrint('o length ${(o as List).length}');
+    //     rawOutput = o as List<List<double>>;
+    //   }
+    // }
+    // korail_lens [1, 55, 8400] [1, 55, 1029] yolov8n [1 84 8400] 에서 값 추출하기
     List<int> idx = [];
     List<String> cls = [];
     List<List<double>> box = [];
@@ -216,14 +229,18 @@ class _DetectorServer {
   }
 
   List<Object> _runInference(List<List<List<num>>> imageMatrix) {
-    // Set input tensor [1, 640, 640, 3] [1, 3, 640, 640]
+    // Set input tensor [1, 640, 640, 3] [1, 224, 244, 3]
     final input = [imageMatrix];
-    // debugPrint('input $input');
-    // korail_lens [1, 55, 8400] yolov8n [1, 84, 8400] [1, 6, 1029]
-    final numOfLabels = _labels?.length ?? 0;
-    final count = numOfLabels + 4;
-    final outputs =
-        List<num>.filled(1 * count * 1029, 0).reshape([1, count, 1029]);
+    // korail_lens [1, 55, 8400] [1, 55, 1029] yolov8n [1, 84, 8400]
+    // final outputs =
+    //     List<num>.filled(1 * count * 8400, 0).reshape([1, count, 8400]);
+    final numOut = _interpreter?.getOutputTensors().first.shape[0] ?? 1;
+    final numOut1 = _interpreter?.getOutputTensors().first.shape[1] ?? 1;
+    final numOut2 = _interpreter?.getOutputTensors().first.shape[2] ?? 1;
+    // debugPrint('input ${_interpreter?.getInputTensors().first.shape}');
+    // debugPrint('output ${_interpreter?.getOutputTensors().first.shape}');
+    final outputs = List<num>.filled(numOut * numOut1 * numOut2, 0)
+        .reshape([numOut, numOut1, numOut2]);
     var map = <int, Object>{};
     map[0] = outputs;
     _interpreter!.runForMultipleInputs([input], map);
