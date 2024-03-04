@@ -44,8 +44,8 @@ class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
         _subscription = instance.resultsStream.stream.listen((values) {
           // debugPrint('cls ${values['cls']}');
           // debugPrint('box ${values['box']}');
-          debugPrint('conf ${values['conf']}');
-          debugPrint('stats ${values['stats']}');
+          // debugPrint('conf ${values['conf']}');
+          // debugPrint('stats ${values['stats']}');
           // debugPrint('threads ${Platform.numberOfProcessors}');
           setState(() {
             classes = values['cls'];
@@ -68,7 +68,7 @@ class _YoloPageState extends State<YoloPage> with WidgetsBindingObserver {
     // cameras[0] for back-camera
     _cameraController = CameraController(
       camera,
-      ResolutionPreset.high,
+      ResolutionPreset.low,
       enableAudio: false,
     )..initialize().then((_) async {
         await _controller.startImageStream(onLatestImageAvailable);

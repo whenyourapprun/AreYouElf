@@ -17,7 +17,8 @@ class Bbox extends StatelessWidget {
     final double width = box[2] * ScreenParams.screenSize.width;
     final double height = box[3] * ScreenParams.screenSize.height;
     final double left = (box[0] * ScreenParams.screenSize.width) - (width / 2);
-    final double top = (box[1] * ScreenParams.screenSize.height) - (height / 2);
+    final double top =
+        ((1 - box[1]) * ScreenParams.screenSize.height) - (height / 2);
     debugPrint('$box $name $score');
     return Positioned(
       left: left,
